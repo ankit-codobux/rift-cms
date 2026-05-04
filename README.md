@@ -185,13 +185,7 @@ If needed for client handoff, this section can be copied verbatim into `docs/ai-
 
 ## GitHub repo link
 
-No git remote is configured in this workspace yet, so there is currently no publishable GitHub URL.
+Repository:
 
-To publish:
-
-```bash
-git remote add origin <your-repo-url>
-git add .
-git commit -m "Rebuild RIFT site as Payload block-based CMS"
-git push -u origin main
-```
+- `git@github.com:ankit-codobux/rift-cms.git`
+- https://github.com/ankit-codobux/rift-cms
