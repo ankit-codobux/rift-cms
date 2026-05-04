@@ -1,67 +1,197 @@
-# Payload Blank Template
+# RIFT CMS (Payload + Next.js)
 
-This template comes configured with the bare minimum to get started on anything you need.
+This project rebuilds the original single-page RIFT site into a proper Payload CMS setup with SQLite and block-driven page content.
 
-## Quick start
+## What was converted
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+The old browser-Babel site (`index.html + app.jsx + services.jsx + extras.jsx + case-studies.jsx + style.css`) is now modeled into reusable Payload blocks and rendered by Next.js:
 
-## Quick Start - local setup
+- `Hero`
+- `Stats`
+- `Process`
+- `Chat`
+- `Services`
+- `Statement`
+- `Differentiators`
+- `Approach`
+- `CaseStudies`
+- `Tech`
+- `Team`
+- `Cta`
+- `Footer`
 
-To spin up this template locally, follow these steps:
+All core copy was seeded from the original source so `/` renders real RIFT content on first run.
 
-### Clone
+## Tech stack
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+- Payload CMS `3.84.1`
+- Next.js `16`
+- SQLite via `@payloadcms/db-sqlite`
 
-### Development
+## Local setup
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+1. Clone the repo
+2. Install dependencies
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+```bash
+npm install
+```
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+3. Copy env file
 
-#### Docker (Optional)
+```bash
+cp .env.example .env
+```
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+4. Start development server
 
-To do so, follow these steps:
+```bash
+npm run dev
+```
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+5. Open:
+- Frontend: `http://localhost:3000`
+- Admin: `http://localhost:3000/admin`
 
-## How it works
+On first run, the app seeds a `home` page automatically through `onInit` in `payload.config.ts`.
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## Content model
 
-### Collections
+- Collection: `pages`
+- Fields:
+  - `title`
+  - `slug`
+  - `layout` (blocks)
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+Block configs live in:
 
-- #### Users (Authentication)
+- `src/blocks/*/config.ts`
 
-  Users are auth-enabled collections that have access to the admin panel.
+Frontend block components live in:
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/3.x/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+- `src/blocks/*.tsx`
 
-- #### Media
+Server-side block rendering:
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+- `src/app/(frontend)/render-blocks.tsx`
 
-### Docker
+## Notes on SQLite + schema
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+- Local development uses schema push automatically.
+- If you change block schema significantly and hit local SQLite mismatch issues, delete local DB and restart:
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+```bash
+rm -f rift-cms.db rift-cms.db-journal
+npm run dev
+```
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+## AI workflow (bonus)
 
-## Questions
+High-level workflow used for this conversion:
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+1. Parsed all original source files and mapped sections/components.
+2. Extracted content shape and created block schemas for reusable sections.
+3. Implemented Next.js block components using original class names and copied CSS.
+4. Wired `pages` collection + block renderer for slug-based homepage fetch.
+5. Seeded real homepage content from original source in `onInit`.
+6. Regenerated Payload types/import map.
+7. Verified with TypeScript and production build.
+
+Useful commands run during implementation:
+
+```bash
+npm run generate:types
+npm run generate:importmap
+npx tsc --noEmit
+npx next build --webpack
+```
+
+## Client-facing collaboration log (you + AI)
+
+This section documents how the project was built from your instructions, step by step.
+
+### 1) Project framing from you
+
+You asked for a rebuild of the existing RIFT single-page React/Babel site into a proper Payload CMS project with:
+
+- SQLite database
+- Reusable block-based page model
+- Preserved copy/structure/layout feel from the original source
+- Seeded real homepage content on first run
+- Setup docs for cloning and local run
+
+### 2) Your source-driven workflow
+
+You provided source files incrementally and asked to:
+
+- extract structure first
+- map sections to block schema
+- avoid implementation until schema direction was clear
+
+Then you moved the task from analysis to implementation block-by-block.
+
+### 3) Key requests you gave (chronological)
+
+1. `Understand page structure from index.html + app.jsx`
+2. `Extract Services content + schema`
+3. `Define Hero block schema`
+4. `Implement Hero + Services React components`
+5. `Create Pages collection with layout blocks`
+6. `Fix module resolution/import path issues`
+7. `Create homepage that fetches slug=home and renders blocks`
+8. `Resolve layout/hydration and Payload admin runtime issues`
+9. `Match original layout/CSS/behavior using full provided source set`
+10. `Include AI workflow/client visibility in README`
+11. UI parity fixes you requested after review:
+    - missing `CodeStream`
+    - Hero rotating word animation mismatch
+    - missing third chat bubble sequence after typing indicator
+    - missing `B2B Platform`, `SaaS Platform`, `Corporate Site` tabs in case studies
+    - missing tech tile icons + random hide/reveal animation
+    - missing founder initials in team placeholder portraits
+    - restore 12 tech items from original design
+
+### 4) What AI implemented in response
+
+- Built a `pages` collection with `layout` blocks
+- Added reusable block configs + React renderers for the site sections
+- Wired frontend to fetch and render Payload `home` page dynamically
+- Seeded full RIFT homepage content via `onInit` (create/update behavior)
+- Copied/used original styling system for visual parity
+- Iteratively fixed parity gaps based on your QA feedback
+- Regenerated Payload types/import map and validated with build/typecheck
+
+### 5) Issues encountered and how they were resolved
+
+- Admin context/hydration architecture conflicts were resolved by using correct route-group layout structure.
+- Import path mismatches were corrected against actual file structure.
+- SQLite schema mismatch occurred after block changes; resolved by aligning schema, regenerating types, and handling local DB reset flow.
+- Tech section insert error (`id` collision in array row schema) was fixed by removing conflicting custom `id` field.
+
+### 6) Current state after your feedback loop
+
+- Homepage content is block-driven from Payload (`slug: home`)
+- Original design intent is preserved and iteratively matched
+- Missing sections/animations you flagged were implemented
+- Build and typecheck pass
+
+If needed for client handoff, this section can be copied verbatim into `docs/ai-workflow.md` as an audit trail.
+
+## Current status
+
+- Build passes (`next build`)
+- Admin route is configured at `/admin`
+- Homepage renders from Payload page `slug = home`
+
+## GitHub repo link
+
+No git remote is configured in this workspace yet, so there is currently no publishable GitHub URL.
+
+To publish:
+
+```bash
+git remote add origin <your-repo-url>
+git add .
+git commit -m "Rebuild RIFT site as Payload block-based CMS"
+git push -u origin main
+```

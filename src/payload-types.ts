@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    pages: Page;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,13 +79,14 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -122,7 +124,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -147,7 +149,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -163,10 +165,313 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  slug: string;
+  layout: (
+    | HeroBlock
+    | StatsBlock
+    | ProcessBlock
+    | ChatBlock
+    | ServicesBlock
+    | StatementBlock
+    | DifferentiatorsBlock
+    | ApproachBlock
+    | CaseStudiesBlock
+    | TechBlock
+    | TeamBlock
+    | CtaBlock
+    | FooterBlock
+  )[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  /**
+   * Editor-only label for identifying this hero block.
+   */
+  name?: string | null;
+  headlinePrefix: string;
+  rotatingWords?:
+    | {
+        word: string;
+        id?: string | null;
+      }[]
+    | null;
+  headlineSuffix: string;
+  subheadline: string;
+  meta: {
+    line1: string;
+    line2: string;
+    statusLabel: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  items?:
+    | {
+        key: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock".
+ */
+export interface ProcessBlock {
+  sectionTag?: string | null;
+  title: string;
+  tabs?:
+    | {
+        id: string;
+        label: string;
+      }[]
+    | null;
+  caption?: string | null;
+  leftText: string;
+  rightText: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'process';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ChatBlock".
+ */
+export interface ChatBlock {
+  sectionTag?: string | null;
+  title: string;
+  paragraphs?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'chat';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock".
+ */
+export interface ServicesBlock {
+  /**
+   * Editor-only label for identifying this section in the page layout.
+   */
+  name?: string | null;
+  sectionTag?: string | null;
+  title?: string | null;
+  supportText?: string | null;
+  showAccentCard?: boolean | null;
+  services?:
+    | {
+        /**
+         * Stable key, e.g. "websites".
+         */
+        id: string;
+        /**
+         * Display number, e.g. "01".
+         */
+        number: string;
+        title: string;
+        description: string;
+        icon: 'cpu' | 'layers' | 'database' | 'zap' | 'cloud';
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'services';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatementBlock".
+ */
+export interface StatementBlock {
+  sectionTag?: string | null;
+  quote: string;
+  meta?: string | null;
+  label?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'statement';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DifferentiatorsBlock".
+ */
+export interface DifferentiatorsBlock {
+  sectionTag?: string | null;
+  title: string;
+  items?:
+    | {
+        code: string;
+        tag: string;
+        title: string;
+        body: string;
+        dark?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'differentiators';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApproachBlock".
+ */
+export interface ApproachBlock {
+  sectionTag?: string | null;
+  title: string;
+  phases?:
+    | {
+        tag: string;
+        title: string;
+        body: string;
+        quote: string;
+        dark?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  metaTitle: string;
+  metaBody1: string;
+  metaBody2: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'approach';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CaseStudiesBlock".
+ */
+export interface CaseStudiesBlock {
+  sectionTag?: string | null;
+  title?: string | null;
+  recordingTypes?:
+    | {
+        id: string;
+        label: string;
+      }[]
+    | null;
+  cases?:
+    | {
+        id: string;
+        label: string;
+        project: string;
+        sector: string;
+        title: string;
+        description: string;
+        challenge: string;
+        solution: string;
+        deployed: string;
+        duration: string;
+        type: string;
+        images?:
+          | {
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'caseStudies';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TechBlock".
+ */
+export interface TechBlock {
+  sectionTag?: string | null;
+  title: string;
+  items?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tech';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamBlock".
+ */
+export interface TeamBlock {
+  sectionTag?: string | null;
+  title: string;
+  members?:
+    | {
+        role: string;
+        name: string;
+        paragraphs?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        initials: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'team';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock".
+ */
+export interface CtaBlock {
+  sectionTag?: string | null;
+  title: string;
+  paragraphs?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FooterBlock".
+ */
+export interface FooterBlock {
+  showLogo?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'footer';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +488,24 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +515,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +538,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -274,6 +583,287 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  layout?:
+    | T
+    | {
+        hero?: T | HeroBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        process?: T | ProcessBlockSelect<T>;
+        chat?: T | ChatBlockSelect<T>;
+        services?: T | ServicesBlockSelect<T>;
+        statement?: T | StatementBlockSelect<T>;
+        differentiators?: T | DifferentiatorsBlockSelect<T>;
+        approach?: T | ApproachBlockSelect<T>;
+        caseStudies?: T | CaseStudiesBlockSelect<T>;
+        tech?: T | TechBlockSelect<T>;
+        team?: T | TeamBlockSelect<T>;
+        cta?: T | CtaBlockSelect<T>;
+        footer?: T | FooterBlockSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock_select".
+ */
+export interface HeroBlockSelect<T extends boolean = true> {
+  name?: T;
+  headlinePrefix?: T;
+  rotatingWords?:
+    | T
+    | {
+        word?: T;
+        id?: T;
+      };
+  headlineSuffix?: T;
+  subheadline?: T;
+  meta?:
+    | T
+    | {
+        line1?: T;
+        line2?: T;
+        statusLabel?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock_select".
+ */
+export interface StatsBlockSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        key?: T;
+        value?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProcessBlock_select".
+ */
+export interface ProcessBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  tabs?:
+    | T
+    | {
+        id?: T;
+        label?: T;
+      };
+  caption?: T;
+  leftText?: T;
+  rightText?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ChatBlock_select".
+ */
+export interface ChatBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  paragraphs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock_select".
+ */
+export interface ServicesBlockSelect<T extends boolean = true> {
+  name?: T;
+  sectionTag?: T;
+  title?: T;
+  supportText?: T;
+  showAccentCard?: T;
+  services?:
+    | T
+    | {
+        id?: T;
+        number?: T;
+        title?: T;
+        description?: T;
+        icon?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatementBlock_select".
+ */
+export interface StatementBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  quote?: T;
+  meta?: T;
+  label?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DifferentiatorsBlock_select".
+ */
+export interface DifferentiatorsBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        code?: T;
+        tag?: T;
+        title?: T;
+        body?: T;
+        dark?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ApproachBlock_select".
+ */
+export interface ApproachBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  phases?:
+    | T
+    | {
+        tag?: T;
+        title?: T;
+        body?: T;
+        quote?: T;
+        dark?: T;
+        id?: T;
+      };
+  metaTitle?: T;
+  metaBody1?: T;
+  metaBody2?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CaseStudiesBlock_select".
+ */
+export interface CaseStudiesBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  recordingTypes?:
+    | T
+    | {
+        id?: T;
+        label?: T;
+      };
+  cases?:
+    | T
+    | {
+        id?: T;
+        label?: T;
+        project?: T;
+        sector?: T;
+        title?: T;
+        description?: T;
+        challenge?: T;
+        solution?: T;
+        deployed?: T;
+        duration?: T;
+        type?: T;
+        images?:
+          | T
+          | {
+              url?: T;
+              id?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TechBlock_select".
+ */
+export interface TechBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TeamBlock_select".
+ */
+export interface TeamBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  members?:
+    | T
+    | {
+        role?: T;
+        name?: T;
+        paragraphs?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        initials?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock_select".
+ */
+export interface CtaBlockSelect<T extends boolean = true> {
+  sectionTag?: T;
+  title?: T;
+  paragraphs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FooterBlock_select".
+ */
+export interface FooterBlockSelect<T extends boolean = true> {
+  showLogo?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
