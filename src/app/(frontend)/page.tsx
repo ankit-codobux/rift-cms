@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 
 import { RenderBlocks } from './render-blocks'
 import { CodeStream } from '@/lib/CodeStream'
-import { RiftLogo } from '@/lib/rift-ui'
+import { RiftLogo, ScrollProgress } from '@/lib/rift-ui'
 import config from '@/payload.config'
 
 export const dynamic = 'force-dynamic'
@@ -29,6 +29,7 @@ export default async function HomePage() {
 
   return (
     <div className="rift-site">
+      <ScrollProgress />
       <CodeStream />
       <nav className="rift-nav">
         <div className="nav-inner">

@@ -10,6 +10,50 @@ export function PlayIcon({ size = 24 }: { size?: number }) {
   )
 }
 
+export function ScrollProgress() {
+  const [progress, setProgress] = useState(0)
+  const [sectionIdx, setSectionIdx] = useState(0)
+  const [totalSections, setTotalSections] = useState(8)
+
+  useEffect(() => {
+    const update = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
+      const scrollY = window.scrollY
+      setProgress(scrollHeight > 0 ? (scrollY / scrollHeight) * 100 : 0)
+
+      const sections = document.querySelectorAll('[data-rift-section]')
+      setTotalSections(sections.length || 8)
+
+      let active = 0
+      sections.forEach((section, i) => {
+        const rect = section.getBoundingClientRect()
+        if (rect.top < window.innerHeight * 0.4) active = i
+      })
+      setSectionIdx(active)
+    }
+
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    update()
+
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [])
+
+  return (
+    <>
+      <div className="scroll-progress" style={{ width: `${progress}%` }} />
+      <div className="section-counter">
+        <span className="sc-num">{String(sectionIdx + 1).padStart(2, '0')}</span>
+        <span className="sc-sep">/</span>
+        <span className="sc-tot">{String(totalSections).padStart(2, '0')}</span>
+      </div>
+    </>
+  )
+}
+
 export function RiftLogo({ isAnimating = false }: { isAnimating?: boolean }) {
   return (
     <div className="rift-logo">
